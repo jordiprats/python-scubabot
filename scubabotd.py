@@ -25,7 +25,7 @@ def telegram_start(bot, update):
     custom_keyboard = [[ location_keyboard ]]
     reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard)
     bot.send_message(chat_id=chat_id,
-                     text="comparteix la teva ubicació per buscar la platja més propera",
+                     text="Si us plau, comparteix la teva ubicació per buscar la platja més propera",
                      reply_markup=reply_markup)
 
 def location(bot, update):
