@@ -30,7 +30,7 @@ def telegram_start(bot, update):
 
 def location(bot, update):
     update.message.reply_text("loc: "+str(update.message.location), use_aliases=True)
-    update.message.reply_text(pymeteoapi.llista_platjes(update.message.location['latitude'], update.message.location['longitude']))
+    platges_candidates = pymeteoapi.llista_platjes(update.message.location['latitude'], update.message.location['longitude'])
 
 # main
 if __name__ == "__main__":
