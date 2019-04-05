@@ -1,6 +1,7 @@
 import urllib.request, json
 
-
-with urllib.request.urlopen("http://maps.googleapis.com/maps/api/geocode/json?address=google") as url:
-    data = json.loads(url.read().decode())
-    print(data)
+def llista_platjes(latitude, longitude):
+    print("http://meteoapi.systemadmin.es/platges/geosearch/"+str(longitude)+"/"+str(latitude))
+    with urllib.request.urlopen("http://meteoapi.systemadmin.es/platges/geosearch/"+str(longitude)+"/"+str(latitude)) as url:
+        data = json.loads(url.read().decode())
+        return str(data)

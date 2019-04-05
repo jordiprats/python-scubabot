@@ -2,12 +2,12 @@
 import sys
 import time
 import logging
-import schedule
 import telegram
 import datetime, time
+import pymeteoapi
 
 from pid import PidFile
-from ConfigParser import SafeConfigParser
+from configparser import SafeConfigParser
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 timeformat = '%Y-%m-%d %H:%M:%S'
@@ -30,6 +30,7 @@ def telegram_start(bot, update):
 
 def location(bot, update):
     update.message.reply_text("loc: "+str(update.message.location), use_aliases=True)
+    update.message.reply_text(pymeteoapi.llista_platjes(update.message.location['latitude'], update.message.location['longitude']))
 
 # main
 if __name__ == "__main__":

@@ -1,1 +1,3 @@
 # python-scubabot
+
+python3
