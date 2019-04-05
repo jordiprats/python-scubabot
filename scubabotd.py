@@ -7,7 +7,7 @@ import datetime, time
 
 from pid import PidFile
 from ConfigParser import SafeConfigParser
-from telegram.ext import Updater, CommandHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 timeformat = '%Y-%m-%d %H:%M:%S'
 
@@ -20,7 +20,12 @@ masters_inda_haus = {}
 def telegram_start(bot, update):
     user_id = update.message.from_user.id
     chat_id = update.message.chat_id
-    update.message.reply_text("scubabot", use_aliases=True)
+    location_keyboard = telegram.KeyboardButton(text="Enviar posició", request_location=True)
+    custom_keyboard = [[ location_keyboard ]]
+    reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard)
+    bot.send_message(chat_id=chat_id,
+                     text="comparteix la teva ubicació per buscar la platja més propera",
+                     reply_markup=reply_markup)
 
 def location(bot, update):
     update.message.reply_text("loc: "+str(update.message.location), use_aliases=True)
