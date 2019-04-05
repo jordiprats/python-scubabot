@@ -1,6 +1,5 @@
 import sys
 import time
-import json
 import logging
 import schedule
 import telegram
@@ -22,6 +21,9 @@ def telegram_start(bot, update):
     user_id = update.message.from_user.id
     chat_id = update.message.chat_id
     update.message.reply_text("scubabot", use_aliases=True)
+
+def location(bot, update):
+    update.message.reply_text("loc: "+str(update.message.location), use_aliases=True)
 
 # main
 if __name__ == "__main__":
@@ -53,6 +55,7 @@ if __name__ == "__main__":
         dp = updater.dispatcher
 
         updater.dispatcher.add_handler(CommandHandler('start', telegram_start))
+        updater.dispatcher.add_handler(MessageHandler(Filters.location, location))
 
         updater.start_polling()
 
