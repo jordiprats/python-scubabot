@@ -19,9 +19,9 @@ circuitbreaker_status = True
 enabled_scheduler = True
 masters_inda_haus = {}
 
-def connect_db(db_file):
+def connect_db(dbfile):
     try:
-        conn = sqlite3.connect(db_file)
+        conn = sqlite3.connect(dbfile)
         return conn
     except Error as e:
         print(e)
