@@ -49,4 +49,7 @@ def llista_platjes(latitude, longitude, limit=4, distancia=15):
 
     for row in cur.fetchall() :
         print(row[0], " ", row[2])
+
+    cur.close()
+    db.close()
     return db_query
