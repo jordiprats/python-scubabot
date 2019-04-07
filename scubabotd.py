@@ -32,7 +32,7 @@ def telegram_start(bot, update):
 
 def location(bot, update):
     user_id = update.message.from_user.id
-    update.message.reply_text("loc: "+str(update.message.location), use_aliases=True)
+    # update.message.reply_text("loc: "+str(update.message.location), use_aliases=True)
     platges = pymeteoapi.llista_platjes(update.message.location['latitude'], update.message.location['longitude'])
     logging.info(str(platges))
     count_platges=len(platges)
