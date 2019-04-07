@@ -24,7 +24,7 @@ def connect_db(dbfile):
         conn = sqlite3.connect(dbfile)
         return conn
     except Error as e:
-        print(e)
+        logging.error(str(e))
     return None
 
 def telegram_start(bot, update):
@@ -40,6 +40,7 @@ def telegram_start(bot, update):
 def location(bot, update):
     update.message.reply_text("loc: "+str(update.message.location), use_aliases=True)
     platges_candidates = pymeteoapi.llista_platjes(update.message.location['latitude'], update.message.location['longitude'])
+    logging.info(str(platges_candidates))
 
 # main
 if __name__ == "__main__":
