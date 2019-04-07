@@ -4,4 +4,3 @@ pid
 urllib
 json
 configparser
-sqlite3

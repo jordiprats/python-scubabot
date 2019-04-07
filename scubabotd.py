@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
 import time
-import sqlite3
 import logging
 import telegram
 import pymeteoapi
@@ -18,14 +17,6 @@ BOT_TOKEN = ""
 circuitbreaker_status = True
 enabled_scheduler = True
 masters_inda_haus = {}
-
-def connect_db(dbfile):
-    try:
-        conn = sqlite3.connect(dbfile)
-        return conn
-    except Error as e:
-        logging.error(str(e))
-    return None
 
 def telegram_start(bot, update):
     user_id = update.message.from_user.id
