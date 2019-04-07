@@ -50,6 +50,12 @@ if __name__ == "__main__":
         dbfile = config.get('bot', 'db-file').strip('"').strip("'").strip()
 
         try:
+            pymeteoapi.setup(user=config.get('meteoapi', 'user').strip('"').strip("'").strip(),password=config.get('meteoapi', 'password').strip('"').strip("'").strip(),db=config.get('meteoapi', 'db').strip('"').strip("'").strip())
+        except:
+            logging.error("unable to parse meteoapi options")
+            sys.exit(1)
+
+        try:
             debug = config.getboolean('bot', 'debug')
         except:
             debug = False
