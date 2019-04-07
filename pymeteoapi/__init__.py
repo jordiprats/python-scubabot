@@ -11,6 +11,7 @@ def setup(user,password,db):
     meteoapi_db=db
 
 def platja_id_to_descripcio(id):
+    global meteoapi_user,meteoapi_password, meteoapi_db
     db_query = """
             SELECT CONCAT(municipis.nom,', Platja ',platges.nom) as descripcio FROM platges JOIN municipis ON platges.municipi_id=municipis.id WHERE platges.id={id}
        """.format(id=id)
@@ -32,6 +33,7 @@ def platja_id_to_descripcio(id):
     return row[0]
 
 def platja_slug_to_platja_id(slug):
+    global meteoapi_user,meteoapi_password, meteoapi_db
     db_query = """
             SELECT id FROM platges WHERE slug='{slug}'
        """.format(slug=slug)

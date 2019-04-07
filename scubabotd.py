@@ -4,6 +4,7 @@ import time
 import logging
 import telegram
 import pymeteoapi
+import pyscubabotdb
 import datetime, time
 
 from pid import PidFile
@@ -30,6 +31,7 @@ def telegram_start(bot, update):
                      reply_markup=reply_markup)
 
 def location(bot, update):
+    user_id = update.message.from_user.id
     update.message.reply_text("loc: "+str(update.message.location), use_aliases=True)
     platges = pymeteoapi.llista_platjes(update.message.location['latitude'], update.message.location['longitude'])
     logging.info(str(platges))
@@ -43,8 +45,12 @@ def location(bot, update):
         reply_markup = InlineKeyboardMarkup(keyboard)
         update.message.reply_text('Selecciona una platja:', reply_markup=reply_markup)
     elif count_platges == 1:
-        # TODO SELECCIONA PLATJA DIRECTAMENT
-        update.message.reply_text("ENCARA NO SHA IMPLEMENTAT")
+        # SELECCIONA PLATJA DIRECTAMENT
+        platja=next(iter(platges), None)
+        platja_slug=platja['slug']
+        platja_id=pymeteoapi.platja_slug_to_platja_id(platja_slug)
+        pyscubabotdb.setUserPlatja(user_id,platja_id)
+        update.message.reply_text(platja['descripcio'])
     else:
         update.message.reply_text("No s'han trobat platges properes")
 
@@ -59,11 +65,16 @@ def selector_handler(bot, update):
     input_data=[]
     input_data=query.data.split('*')
 
+    platja_slug=input_data[2]
+    platja_id=pymeteoapi.platja_slug_to_platja_id(platja_slug)
+    platja_descripcio = pymeteoapi.platja_id_to_descripcio(platja_id)
+
     if len(input_data) != 3:
         logging.debug('error input data')
         return
 
-    bot.edit_message_text(text=input_data[2], chat_id=query.message.chat_id, message_id=query.message.message_id)
+    bot.edit_message_text(text=platja_descripcio, chat_id=query.message.chat_id, message_id=query.message.message_id)
+    pyscubabotdb.setUserPlatja(user_id,platja_id)
 
 # main
 if __name__ == "__main__":
@@ -85,6 +96,12 @@ if __name__ == "__main__":
             pymeteoapi.setup(user=config.get('meteoapi', 'user').strip('"').strip("'").strip(),password=config.get('meteoapi', 'password').strip('"').strip("'").strip(),db=config.get('meteoapi', 'db').strip('"').strip("'").strip())
         except:
             logging.error("unable to parse meteoapi options")
+            sys.exit(1)
+
+        try:
+            pyscubabotdb.setup(user=config.get('scubabotdb', 'user').strip('"').strip("'").strip(),password=config.get('scubabotdb', 'password').strip('"').strip("'").strip(),db=config.get('scubabotdb', 'db').strip('"').strip("'").strip())
+        except:
+            logging.error("unable to parse scubabotdb options")
             sys.exit(1)
 
         try:
