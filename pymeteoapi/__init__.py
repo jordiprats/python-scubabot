@@ -10,6 +10,48 @@ def setup(user,password,db):
     meteoapi_password=password
     meteoapi_db=db
 
+def platja_id_to_descripcio(id):
+    db_query = """
+            SELECT CONCAT(municipis.nom,', Platja ',platges.nom) as descripcio FROM platges JOIN municipis ON platges.municipi_id=municipis.id WHERE platges.id={id}
+       """.format(id=id)
+    db = MySQLdb.connect(host="localhost",
+                         user=meteoapi_user,
+                         passwd=meteoapi_password,
+                         db=meteoapi_db)
+    cur = db.cursor()
+
+    print(db_query)
+    cur.execute(db_query)
+
+    platges=[]
+    row = cur.fetchone()
+
+    cur.close()
+    db.close()
+
+    return row[0]
+
+def platja_slug_to_platja_id(slug):
+    db_query = """
+            SELECT id FROM platges WHERE slug='{slug}'
+       """.format(slug=slug)
+    db = MySQLdb.connect(host="localhost",
+                         user=meteoapi_user,
+                         passwd=meteoapi_password,
+                         db=meteoapi_db)
+    cur = db.cursor()
+
+    print(db_query)
+    cur.execute(db_query)
+
+    platges=[]
+    row = cur.fetchone()
+
+    cur.close()
+    db.close()
+
+    return row[0]
+
 def llista_platjes(latitude, longitude, limit=4, distancia=15):
     global meteoapi_user,meteoapi_password, meteoapi_db
     # $platges_raw = DB::table('platges')
@@ -25,15 +67,18 @@ def llista_platjes(latitude, longitude, limit=4, distancia=15):
     #   ->take($limit)
     #   ->get();
     db_query = """
-        SELECT nom, slug, 6371 * acos (
+        SELECT
+            CONCAT(municipis.nom,', Platja ',platges.nom) as descripcio,
+            platges.slug,
+            6371 * acos (
              cos ( radians({latitude}) )
            * cos( radians( platges.latitude ) )
            * cos( radians( platges.longitude ) - radians({longitude}) )
            + sin ( radians({latitude}) )
            * sin( radians( platges.latitude ) )
            ) as distance
-       FROM platges
-       GROUP BY nom, slug, distance
+       FROM platges JOIN municipis ON platges.municipi_id=municipis.id
+       GROUP BY descripcio, platges.slug, distance
        HAVING distance < {distancia}
        ORDER BY distance
        LIMIT {limit}
@@ -48,7 +93,7 @@ def llista_platjes(latitude, longitude, limit=4, distancia=15):
     cur.execute(db_query)
 
     platges=[]
-    for row in cur.fetchall() :
+    for row in cur.fetchall():
         platja={}
         platja['nom']=row[0]
         platja['slug']=row[1]

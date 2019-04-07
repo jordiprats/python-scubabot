@@ -8,7 +8,8 @@ import datetime, time
 
 from pid import PidFile
 from configparser import SafeConfigParser
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
 
 timeformat = '%Y-%m-%d %H:%M:%S'
 
@@ -30,8 +31,39 @@ def telegram_start(bot, update):
 
 def location(bot, update):
     update.message.reply_text("loc: "+str(update.message.location), use_aliases=True)
-    platges_candidates = pymeteoapi.llista_platjes(update.message.location['latitude'], update.message.location['longitude'])
-    logging.info(str(platges_candidates))
+    platges = pymeteoapi.llista_platjes(update.message.location['latitude'], update.message.location['longitude'])
+    logging.info(str(platges))
+    count_platges=len(platges)
+
+    if count_platges>2:
+        keyboard = []
+        for platja in platges:
+            keyboard.append([InlineKeyboardButton(platja['nom'], callback_data='platges*selecciona*'+platja['slug'])])
+
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        update.message.reply_text('Selecciona una platja:', reply_markup=reply_markup)
+    elif count_platges == 1:
+        # TODO SELECCIONA PLATJA DIRECTAMENT
+        update.message.reply_text("ENCARA NO SHA IMPLEMENTAT")
+    else:
+        update.message.reply_text("No s'han trobat platges properes")
+
+def selector_handler(bot, update):
+    # bot.send_chat_action(chat_id=update.callback_query.message.chat_id, action=telegram.ChatAction.TYPING)
+    query = update.callback_query
+    user_id = query.from_user.id
+    #logging.debug("Cognom DISPLAY: "+update.message.from_user.last_name)
+    #display_name = update.message.from_user.first_name+" "+update.message.from_user.last_name
+    display_name = query.from_user.first_name
+
+    input_data=[]
+    input_data=query.data.split('*')
+
+    if len(input_data) != 3:
+        logging.debug('error input data')
+        return
+
+    bot.edit_message_text(text=input_data[2], chat_id=query.message.chat_id, message_id=query.message.message_id)
 
 # main
 if __name__ == "__main__":
@@ -71,6 +103,7 @@ if __name__ == "__main__":
 
         updater.dispatcher.add_handler(CommandHandler('start', telegram_start))
         updater.dispatcher.add_handler(MessageHandler(Filters.location, location))
+        updater.dispatcher.add_handler(CallbackQueryHandler(selector_handler))
 
         updater.start_polling()
 
