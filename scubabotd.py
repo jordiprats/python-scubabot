@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import sys
 import time
+import sqlite3
 import logging
 import telegram
-import datetime, time
 import pymeteoapi
+import datetime, time
 
 from pid import PidFile
 from configparser import SafeConfigParser
@@ -17,6 +18,14 @@ BOT_TOKEN = ""
 circuitbreaker_status = True
 enabled_scheduler = True
 masters_inda_haus = {}
+
+def create_connection(db_file):
+    try:
+        conn = sqlite3.connect(db_file)
+        return conn
+    except Error as e:
+        print(e)
+    return None
 
 def telegram_start(bot, update):
     user_id = update.message.from_user.id
@@ -46,6 +55,7 @@ if __name__ == "__main__":
         config.read(configfile)
 
         BOT_TOKEN = config.get('bot', 'token').strip('"').strip("'").strip()
+        dbfile = config.get('bot', 'db-file').strip('"').strip("'").strip()
 
         try:
             debug = config.getboolean('bot', 'debug')
