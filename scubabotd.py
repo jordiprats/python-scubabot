@@ -96,7 +96,6 @@ if __name__ == "__main__":
         config.read(configfile)
 
         BOT_TOKEN = config.get('bot', 'token').strip('"').strip("'").strip()
-        dbfile = config.get('bot', 'db-file').strip('"').strip("'").strip()
 
         try:
             pymeteoapi.setup(user=config.get('meteoapi', 'user').strip('"').strip("'").strip(),password=config.get('meteoapi', 'password').strip('"').strip("'").strip(),db=config.get('meteoapi', 'db').strip('"').strip("'").strip())
