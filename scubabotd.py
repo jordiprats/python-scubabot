@@ -49,8 +49,11 @@ def location(bot, update):
         platja=next(iter(platges), None)
         platja_slug=platja['slug']
         platja_id=pymeteoapi.platja_slug_to_platja_id(platja_slug)
-        pyscubabotdb.setUserPlatja(user_id,platja_id)
         update.message.reply_text(platja['descripcio'])
+        if pyscubabotdb.setUserPlatja(user_id,platja_id):
+            update.message.reply_text("Platja actualitzada")
+        else:
+            update.message.reply_text("Error actualitzant platja")
     else:
         update.message.reply_text("No s'han trobat platges properes")
 
@@ -74,7 +77,10 @@ def selector_handler(bot, update):
         return
 
     bot.edit_message_text(text=platja_descripcio, chat_id=query.message.chat_id, message_id=query.message.message_id)
-    pyscubabotdb.setUserPlatja(user_id,platja_id)
+    if pyscubabotdb.setUserPlatja(user_id,platja_id):
+        update.message.reply_text("Platja actualitzada")
+    else:
+        update.message.reply_text("Error actualitzant platja")
 
 # main
 if __name__ == "__main__":
