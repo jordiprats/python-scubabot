@@ -14,11 +14,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Callb
 
 timeformat = '%Y-%m-%d %H:%M:%S'
 
-
 BOT_TOKEN = ""
-circuitbreaker_status = True
-enabled_scheduler = True
-masters_inda_haus = {}
 
 def telegram_start(bot, update):
     user_id = update.message.from_user.id
