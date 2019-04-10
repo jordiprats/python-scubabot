@@ -22,11 +22,11 @@ def setUserPlatja(user_id,platja_id):
                              db=scubabotdb_db)
         cur = db.cursor()
 
-        print(db_query)
+        #print(db_query)
         cur.execute(db_query)
 
         db.commit()
-        
+
         cur.close()
         db.close()
 
