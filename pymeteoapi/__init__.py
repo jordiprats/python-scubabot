@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import MySQLdb
 
 meteoapi_user=''
@@ -9,6 +10,8 @@ def setup(user,password,db):
     meteoapi_user=user
     meteoapi_password=password
     meteoapi_db=db
+
+# per previsio - últims 24*dies
 
 def platja_id_to_descripcio(id):
     global meteoapi_user,meteoapi_password, meteoapi_db
